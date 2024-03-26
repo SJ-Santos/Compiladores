@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-public class Main{
+public class Mainen{
     public static void main(String[] args) throws FileNotFoundException {
         String PalavraReservada[] = new String[]{"int" , "float","double" ,  "char", "boolean" , "void" , "for", "while" ,"println", "return" , "if", "else","System", "out", "scanf","new"};
         String Simbolos[] = new String[]{"main", "String" , "args", };
