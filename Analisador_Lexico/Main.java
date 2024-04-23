@@ -3,7 +3,7 @@ package Analisador_Lexico;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Main {
+public class Main  {
     private static String PalavraReservada[] = { "int", "float","double", "char", "boolean", "void", "if", "else", "for", "while", "scanf", "println", "return", "public", "private", "System","out" };
            
     private static String Operadores[] = { "=", "+", "-", "*", "/", "%", "&&", "||", "!", "++", "--" };
@@ -16,7 +16,7 @@ public class Main {
         ArrayList<String> ListaDeSimb = new ArrayList<>();
         
         Scanner input = new Scanner(System.in);
-        String argumentos = "public class Main { public static void main ( String [ ] args ) { int i = 0 ;  double  b = 2.1 ; int c  = i + b ; if ( b < i  ) { i = b ; System . out . println (     ) } } } ";
+        String argumentos = " void imprimirValores ( int valores [ ] ) { for ( int i = 0 ; i < valores.length ; i ++ ) { } }   ";
         // argumentos   = input.nextLine();
         
         lex analisador = new lex();
@@ -26,8 +26,10 @@ public class Main {
         for (int i = 0; i < argumentos.length(); i++) {
             letra = argumentos.charAt(i);
             if (letra == ' ') {
-                
-                if(analisador.getLexema() == " "){
+                if (analisador.getLexema().contains("/*")) {
+                     new Exception();
+                }
+                else if(analisador.getLexema() == " "){
 
                     analisador.setLexema(""); // isso serve para limpar o lexema , para os proximos poderem ser identificados
 
@@ -76,29 +78,35 @@ public class Main {
                 } else if (analisador.getLexema().charAt(0) == '"') { //verifica se é texto entre aspas  , não esta funcionando
 
                     int cont = 0;
-                    analisador.setLexema("");
-
+                    
                     for (int j = i; j < argumentos.length(); j++) {
-                        char letraAux = argumentos.charAt(j);
-                        analisador.setLetra(letraAux);
-                        if (letraAux == '"') {
-                            cont++;
-                        } else if (cont == 2) {
+                        if (cont == 2 ) {
                             ListaDeTokens.add("Texto : " + analisador.getLexema());
                             break;
                         }
+                        char letraAux = argumentos.charAt(j);
+                        analisador.setLetra(letraAux);
+                        if (letraAux == '"' || letraAux=='"')  {
+                            cont++;
+                        } 
                     }
                     analisador.setLexema("");
 
-                } else if (analisador.getLexema().charAt(0) == '/' && analisador.getLexema().charAt(1) == '/') {// verifica se é comentario , não funcional
-                    int j = i;
-                    for (j = i; argumentos.charAt(j) != '\n'; j++) {
+                } else if (analisador.getLexema().charAt(0) == '/' ) {// verifica se é comentario , não funcional
+                    if (analisador.getLexema().length() >1) {
+                        if (analisador.getLexema().charAt(1) == '/') {
+                             int j = i;
+                       for (j = i; argumentos.charAt(j) != '\n'; j++) {
                                                                   
-                    }
+                        }
                     
+                        }
+                    }
+                   
                     analisador.setLexema("");
 
-                } else if (Operadores(analisador.getLexema())) { // verifica se é operador 
+                }
+                else if (Operadores(analisador.getLexema())) { // verifica se é operador 
 
                     ListaDeTokens.add("Operador :" + analisador.getLexema());
                     analisador.setLexema("");
