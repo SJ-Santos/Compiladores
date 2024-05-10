@@ -15,24 +15,25 @@ public class Lexico {
     private char[] CodigoFonte;
     private int ContadorGlobal;
     private LinkedList<String> TabelaDeSimbolos;
-    private LinkedList<String> TabelaDeTokens;
+    private LinkedList<Lexema> TabelaDeTokens;
 
     public Lexico(String  codigofonte ){
         this.CodigoFonte = codigofonte.replaceAll("\s", "").toCharArray();
         this.ContadorGlobal = 0;
         this.lexema = "";
         TabelaDeSimbolos = new LinkedList<String >();
-        TabelaDeTokens = new LinkedList<String>();
+        TabelaDeTokens = new LinkedList<Lexema>();
         
     }
 
-    private  void preencherTabelaDeTokens(String l){
-        for (int i =0 ; i<this.TabelaDeTokens.size() ; i++){
-            if (this.TabelaDeTokens.get(i) == null ) {
-                this.TabelaDeTokens.add(i, l);
-                break;
-            }
-        }  
+    private  void preencherTabelaDeTokens(Lexema  l){
+        this.TabelaDeTokens.addLast(l);
+        // for (int i =0 ; i<this.TabelaDeTokens.size() ; i++){
+        //     if (this.TabelaDeTokens.get(i) == null ) {
+        //         this.TabelaDeTokens.add(i,l);
+        //         break;
+        //     }
+        // }  
     }
 
     
@@ -65,7 +66,8 @@ public class Lexico {
 
     
 
-    public  LinkedList<String>  ReturnTabelaDeTokens() throws Exception{
+    public  LinkedList<Lexema>  ReturnTabelaDeTokens() throws Exception{
+        Lexema input ;
 
     while (this.ContadorGlobal < this.CodigoFonte.length) {
 
@@ -73,8 +75,147 @@ public class Lexico {
         //    int ,double, char, String ,float,boolean,void,while, main, return , println , if,else,
 
      if (Character.isLetter(this.CodigoFonte[this.ContadorGlobal]) == true){ //testa se é palavra reservada ou id
+          // obs : essa parte das palavras reservadas emula em automato
 
-      //testar todas as palavras reservadas com if e senão é um id 
+       if (this.CodigoFonte[this.ContadorGlobal] == 'i' && this.CodigoFonte[this.ContadorGlobal+1] == 'n' && this.CodigoFonte[this.ContadorGlobal+2] == 't') { // se é int 
+        
+        this.lexema = this.lexema+ this.CodigoFonte[this.ContadorGlobal] + this.CodigoFonte[this.ContadorGlobal+1] + this.CodigoFonte[this.ContadorGlobal+2] ;
+        this.ContadorGlobal = this.ContadorGlobal+3;
+        input = new Lexema("Palavra Reservada : ", lexema);
+        preencherTabelaDeTokens(input);
+        this.lexema = "";
+
+       }else if (this.CodigoFonte[this.ContadorGlobal] == 'd' && this.CodigoFonte[this.ContadorGlobal+1] == 'o' && this.CodigoFonte[this.ContadorGlobal+2] =='u' && this.CodigoFonte[this.ContadorGlobal+3] == 'b'&& this.CodigoFonte[this.ContadorGlobal+4] == 'l' && this.CodigoFonte[this.ContadorGlobal+5] == 'e' ) { 
+        //verifica se é double
+        
+        this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal+1] + this.CodigoFonte[this.ContadorGlobal+2] + this.CodigoFonte[this.ContadorGlobal+3]  + this.CodigoFonte[this.ContadorGlobal+4]+this.CodigoFonte[this.ContadorGlobal+5];
+        this.ContadorGlobal = this.ContadorGlobal + 6;
+        input = new Lexema("Palavra Reservada : ", lexema);
+        preencherTabelaDeTokens(input);
+        this.lexema = "";
+
+
+       }else if (this.CodigoFonte[this.ContadorGlobal] == 'c' && this.CodigoFonte[this.ContadorGlobal+1] == 'h' && this.CodigoFonte[this.ContadorGlobal+2] == 'a' && this.CodigoFonte[this.ContadorGlobal+3] == 'r') { //verifica se é char
+        
+        this.lexema = this.lexema  + this.CodigoFonte[this.ContadorGlobal+1]+ this.CodigoFonte[this.ContadorGlobal+2]+this.CodigoFonte[this.ContadorGlobal+3];
+        this.ContadorGlobal = this.ContadorGlobal + 4;
+        input = new Lexema("Palavra Reservada : ", lexema);
+        preencherTabelaDeTokens(input);
+        this.lexema = "";
+
+
+       }else if (this.CodigoFonte[this.ContadorGlobal] == 'S' && this.CodigoFonte[this.ContadorGlobal+1] == 't' && this.CodigoFonte[this.ContadorGlobal+2] == 'r' && this.CodigoFonte[this.ContadorGlobal+3] == 'i' && this.CodigoFonte[this.ContadorGlobal+4] == 'n' && this.CodigoFonte[this.ContadorGlobal+5] =='g') {
+        //verifica se é String 
+        
+        this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal]+ this.CodigoFonte[this.ContadorGlobal+1] + this.CodigoFonte[this.ContadorGlobal+2] + this.CodigoFonte[this.ContadorGlobal+3] + this.CodigoFonte[this.ContadorGlobal+4] + this.CodigoFonte[this.ContadorGlobal+5] ;
+        this.ContadorGlobal = this.ContadorGlobal + 6;
+        input = new Lexema("Palavra Reservada : ", lexema);
+        preencherTabelaDeTokens(input);
+        this.lexema = "";
+
+       }else if (this.CodigoFonte[this.ContadorGlobal] == 'f' && this.CodigoFonte[this.ContadorGlobal+1] == 'l' && this.CodigoFonte[this.ContadorGlobal+2] == 'o' && this.CodigoFonte[this.ContadorGlobal+3] == 'a' && this.CodigoFonte[this.ContadorGlobal+4] == 't') { // verifica se é float
+        
+        this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal]+ this.CodigoFonte[this.ContadorGlobal+1] + this.CodigoFonte[this.ContadorGlobal+2] + this.CodigoFonte[this.ContadorGlobal+3] + this.CodigoFonte[this.ContadorGlobal+4] ;
+        this.ContadorGlobal = this.ContadorGlobal + 5;
+        input = new Lexema("Palavra Reservada : ", lexema);
+        preencherTabelaDeTokens(input);
+        this.lexema = "";
+
+       }else if (this.CodigoFonte[this.ContadorGlobal] == 'b' && this.CodigoFonte[this.ContadorGlobal+1] == 'o' && this.CodigoFonte[this.ContadorGlobal+2] == 'o' && this.CodigoFonte[this.ContadorGlobal+3] == 'l' && this.CodigoFonte[this.ContadorGlobal+4] == 'e' && this.CodigoFonte[this.ContadorGlobal+5] == 'a' && this.CodigoFonte[this.ContadorGlobal+6] == 'n' ) {
+        // verifica se é boolean 
+
+        this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal]+ this.CodigoFonte[this.ContadorGlobal+1] + this.CodigoFonte[this.ContadorGlobal+2] + this.CodigoFonte[this.ContadorGlobal+3] + this.CodigoFonte[this.ContadorGlobal+4] + this.CodigoFonte[this.ContadorGlobal+5] + this.CodigoFonte[this.ContadorGlobal+6];
+        this.ContadorGlobal = this.ContadorGlobal + 7;
+        input = new Lexema("Palavra Reservada : ", lexema);
+        preencherTabelaDeTokens(input);
+        this.lexema = "";
+
+       }else if (this.CodigoFonte[this.ContadorGlobal] == 'v' && this.CodigoFonte[this.ContadorGlobal+1] == 'o' && this.CodigoFonte[this.ContadorGlobal+2] == 'i' && this.CodigoFonte[this.ContadorGlobal+3] == 'd' ) { // verifica se é void 
+        
+        this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal]+ this.CodigoFonte[this.ContadorGlobal+1] + this.CodigoFonte[this.ContadorGlobal+2] + this.CodigoFonte[this.ContadorGlobal+3];
+        this.ContadorGlobal = this.ContadorGlobal + 4;
+        input = new Lexema("Palavra Reservada : ", lexema);
+        preencherTabelaDeTokens(input);
+        this.lexema = "";
+
+       }else if (this.CodigoFonte[this.ContadorGlobal] == 'w' && this.CodigoFonte[this.ContadorGlobal+1] == 'h' && this.CodigoFonte[this.ContadorGlobal+2] == 'i' && this.CodigoFonte[this.ContadorGlobal+3] == 'l' && this.CodigoFonte[this.ContadorGlobal+4] == 'e' ) { // verifica se é while 
+        
+          
+        this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal]+ this.CodigoFonte[this.ContadorGlobal+1] + this.CodigoFonte[this.ContadorGlobal+2] + this.CodigoFonte[this.ContadorGlobal+3] + this.CodigoFonte[this.ContadorGlobal+4] ;
+        this.ContadorGlobal = this.ContadorGlobal + 5;
+        input = new Lexema("Palavra Reservada : ", lexema);
+        preencherTabelaDeTokens(input);
+        this.lexema = "";
+
+       }else if (this.CodigoFonte[this.ContadorGlobal] == 'm' && this.CodigoFonte[this.ContadorGlobal+1] == 'a' && this.CodigoFonte[this.ContadorGlobal+2] == 'i' && this.CodigoFonte[this.ContadorGlobal+3] == 'n' ) { // verifica se é main 
+        
+        this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal]+ this.CodigoFonte[this.ContadorGlobal+1] + this.CodigoFonte[this.ContadorGlobal+2] + this.CodigoFonte[this.ContadorGlobal+3] ;
+        this.ContadorGlobal = this.ContadorGlobal + 4;
+        input = new Lexema("Palavra Reservada : ", lexema);
+        preencherTabelaDeTokens(input);
+        this.lexema = "";
+
+       }else if (this.CodigoFonte[this.ContadorGlobal] == 'r' && this.CodigoFonte[this.ContadorGlobal+1] == 'e' && this.CodigoFonte[this.ContadorGlobal+2] == 't' && this.CodigoFonte[this.ContadorGlobal+3] == 'u' && this.CodigoFonte[this.ContadorGlobal+4] == 'r' && this.CodigoFonte[this.ContadorGlobal+5] == 'n' ) { // verifica se é return 
+        
+        this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal]+ this.CodigoFonte[this.ContadorGlobal+1] + this.CodigoFonte[this.ContadorGlobal+2] + this.CodigoFonte[this.ContadorGlobal+3] + this.CodigoFonte[this.ContadorGlobal+4] + this.CodigoFonte[this.ContadorGlobal+5] ;
+        this.ContadorGlobal = this.ContadorGlobal + 6;
+        input = new Lexema("Palavra Reservada : ", lexema);
+        preencherTabelaDeTokens(input);
+        this.lexema = "";
+
+       }else if (this.CodigoFonte[this.ContadorGlobal] == 'p' && this.CodigoFonte[this.ContadorGlobal+1] == 'r' && this.CodigoFonte[this.ContadorGlobal+2] == 'i' && this.CodigoFonte[this.ContadorGlobal+3] == 'n' && this.CodigoFonte[this.ContadorGlobal+4] == 't' && this.CodigoFonte[this.ContadorGlobal+5] == 'l' && this.CodigoFonte[this.ContadorGlobal+6] == 'n' ) {
+        
+        this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal]+ this.CodigoFonte[this.ContadorGlobal+1] + this.CodigoFonte[this.ContadorGlobal+2] + this.CodigoFonte[this.ContadorGlobal+3] + this.CodigoFonte[this.ContadorGlobal+4] + this.CodigoFonte[this.ContadorGlobal+5] + this.CodigoFonte[this.ContadorGlobal+6];
+        this.ContadorGlobal = this.ContadorGlobal + 7;
+        input = new Lexema("Palavra Reservada : ", lexema);
+        preencherTabelaDeTokens(input);
+        this.lexema = "";
+
+       }else if (this.CodigoFonte[this.ContadorGlobal] == 'e' && this.CodigoFonte[this.ContadorGlobal+1] == 'l' && this.CodigoFonte[this.ContadorGlobal+2] == 's' && this.CodigoFonte[this.ContadorGlobal+3] == 'e' ) {
+        
+        this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal]+ this.CodigoFonte[this.ContadorGlobal+1] + this.CodigoFonte[this.ContadorGlobal+2] + this.CodigoFonte[this.ContadorGlobal+3] ;
+        this.ContadorGlobal = this.ContadorGlobal + 4;
+        input = new Lexema("Palavra Reservada : ", lexema);
+        preencherTabelaDeTokens(input);
+        this.lexema = "";
+
+       }else if (this.CodigoFonte[this.ContadorGlobal] == 'i' && this.CodigoFonte[this.ContadorGlobal+1] == 'f') {
+        
+        this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal]+ this.CodigoFonte[this.ContadorGlobal+1] ;
+        this.ContadorGlobal = this.ContadorGlobal + 2;
+        input = new Lexema("Palavra Reservada : ", lexema);
+        preencherTabelaDeTokens(input);
+        this.lexema = "";
+
+       } else { // não é uma palavra reservada , então é ID 
+        
+        for ( int i = this.ContadorGlobal ; i< this.CodigoFonte.length ; i++ ){
+            if (Character.isDigit(this.CodigoFonte[i])) {
+
+                this.lexema = this.lexema + this.CodigoFonte[i];
+
+            }else if (Character.isLetter(this.CodigoFonte[i])) {
+
+                this.lexema = this.lexema + this.CodigoFonte[i];
+
+            }else if (this.CodigoFonte[i] == '_'){
+
+                this.lexema = this.lexema + this.CodigoFonte[i];
+
+            }else {
+
+               input  = new Lexema("ID" + consultaNatabelaDeSimbolos(lexema) + " : ", lexema) ;
+               preencherTabelaDeTokens(input);
+               this.ContadorGlobal = i;
+               this.lexema = "";
+               break;
+
+             
+            }
+        }
+
+         
+       }
             
      } else if (this.CodigoFonte[this.ContadorGlobal] == '"') { // testa se é texto 
 
@@ -89,9 +230,10 @@ public class Lexico {
             if (contador_de_aspas == 2) {
 
                  this.lexema = this.lexema + this.CodigoFonte[u];
-                 preencherTabelaDeTokens(lexema);
+                 input = new Lexema("Texto : ", this.lexema);
+                 preencherTabelaDeTokens(input);
                  this.lexema = "";
-                 this.ContadorGlobal = u;
+                 this.ContadorGlobal = u+1;
 
             }
 
@@ -107,31 +249,47 @@ public class Lexico {
 
     }else if(Character.isDigit(this.CodigoFonte[this.ContadorGlobal])){ // testa se é num double ou  num int 
 
-       for(int i = this.ContadorGlobal ; i < this.CodigoFonte.length ;i++){
+        boolean isDouble = false ;
+        int i ;
+       for( i = this.ContadorGlobal ; i < this.CodigoFonte.length ;i++){
          
           if (Character.isDigit(this.CodigoFonte[i])) { // num int 
 
             this.lexema = this.lexema + this.CodigoFonte[i];
 
-          }if (this.CodigoFonte[i] == '.') { // num double 
-
+          }else if (this.CodigoFonte[i] == '.') { // num double 
+            isDouble = true ;
             this.lexema = this.lexema + this.CodigoFonte[i];
 
           }else {
+           
+            break;
+          } 
+         } 
+         if (isDouble) {
 
-            preencherTabelaDeTokens(lexema);
+            input = new Lexema("NumDouble : ", this.lexema);
+            preencherTabelaDeTokens(input);
             this.lexema = "";
             this.ContadorGlobal = i ;
-            break;
+            
 
-          }
+            }else {
+
+                input = new Lexema("NumInt : ", this.lexema);
+                preencherTabelaDeTokens(input);
+                this.lexema = "";
+                this.ContadorGlobal = i ;
+                
+
+            }
          
-       }
          
      }else if (this.isSpecialSymbol(this.CodigoFonte[this.ContadorGlobal]) ){ //testa se é simbolo especial 
         
          this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal];
-         preencherTabelaDeTokens(this.lexema);
+         input = new Lexema("Simbolo Especial : ", this.lexema);
+         preencherTabelaDeTokens(input);
          this.lexema = "";
          this.ContadorGlobal++;
         
@@ -141,46 +299,52 @@ public class Lexico {
          if (this.CodigoFonte[this.ContadorGlobal] == '+') {
 
            this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal];
-           this.preencherTabelaDeTokens(lexema);
+           input = new Lexema("Operador Lógico : ", this.lexema);
+           this.preencherTabelaDeTokens(input);
            this.ContadorGlobal ++;
            this.lexema = "";
             
         }else if (this.CodigoFonte[this.ContadorGlobal] == '-') {
 
            this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal];
-           this.preencherTabelaDeTokens(lexema);
+           input = new Lexema("Operador Lógico : ", this.lexema);
+           this.preencherTabelaDeTokens(input);
            this.ContadorGlobal ++;
            this.lexema = "";
             
         }else if (this.CodigoFonte[this.ContadorGlobal] == '*') {
 
            this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal];
-           this.preencherTabelaDeTokens(lexema);
+           input = new Lexema("Operador Lógico : ", this.lexema);
+           this.preencherTabelaDeTokens(input);
            this.ContadorGlobal ++;
            this.lexema = "";
             
         }else if (this.CodigoFonte[this.ContadorGlobal] == '/'){
 
            this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal];
-           this.preencherTabelaDeTokens(lexema);
+           input = new Lexema("Operador Lógico : ", this.lexema);
+           this.preencherTabelaDeTokens(input);
            this.ContadorGlobal ++;
            this.lexema = "";
 
         }else if (this.CodigoFonte[this.ContadorGlobal] == '=') {
 
-            if (this.CodigoFonte[this.ContadorGlobal] == '=') {
+            if (this.CodigoFonte[this.ContadorGlobal+1] == '=') {
 
                 this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal];
                 this.ContadorGlobal ++;
                 this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal];
                 this.ContadorGlobal ++;
-                this.preencherTabelaDeTokens(lexema);
+                input = new Lexema("Operador Lógico : ", this.lexema);
+                this.preencherTabelaDeTokens(input);
                 this.lexema = "";
 
             }else {
                 
                 this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal];
-                this.preencherTabelaDeTokens(lexema);
+                input = new Lexema("Operador Lógico : ", this.lexema);
+                this.preencherTabelaDeTokens(input);
                 this.ContadorGlobal ++;
                 this.lexema = "";
                 
@@ -190,19 +354,21 @@ public class Lexico {
             
         }else if (this.CodigoFonte[this.ContadorGlobal] == '<') {
 
-            if (this.CodigoFonte[this.ContadorGlobal] == '=') {
+            if (this.CodigoFonte[this.ContadorGlobal+1] == '=') {
 
                 this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal];
                 this.ContadorGlobal ++;
                 this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal];
                 this.ContadorGlobal ++;
-                this.preencherTabelaDeTokens(lexema);
+                input = new Lexema("Operador Lógico : ", this.lexema);
+                this.preencherTabelaDeTokens(input);
                 this.lexema = "";
                 
             }else {
 
              this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal];
-            this.preencherTabelaDeTokens(lexema);
+             input = new Lexema("Operador Lógico : ", this.lexema);
+            this.preencherTabelaDeTokens(input);
             this.ContadorGlobal ++;
             this.lexema = "";
 
@@ -212,19 +378,21 @@ public class Lexico {
             
         }else if (this.CodigoFonte[this.ContadorGlobal] == '>') {
 
-            if (this.CodigoFonte[this.ContadorGlobal] == '=') {
+            if (this.CodigoFonte[this.ContadorGlobal+1] == '=') {
 
                 this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal];
                 this.ContadorGlobal ++;
                 this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal];
                 this.ContadorGlobal ++;
-                this.preencherTabelaDeTokens(lexema);
+                input = new Lexema("Operador Lógico : ", this.lexema);
+                this.preencherTabelaDeTokens(input);
                 this.lexema = "";
                 
             }else {
 
              this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal];
-            this.preencherTabelaDeTokens(lexema);
+             input = new Lexema("Operador Lógico : ", this.lexema);
+            this.preencherTabelaDeTokens(input);
             this.ContadorGlobal ++;
             this.lexema = "";
 
@@ -262,13 +430,19 @@ public class Lexico {
            }
         }
 
+     }else if (this.CodigoFonte[this.ContadorGlobal] == '\n') {
+        this.ContadorGlobal++;
      }
-        //testar se é operador logico 
+        try {
+            
+        } catch (Exception e) {
+            throw new Exception();
+        }
         
     }
          
     
-    return null ;
+    return this.TabelaDeTokens ;
    
     }
 
@@ -281,6 +455,7 @@ public class Lexico {
             case ';':
             case ']':
             case '[':
+            case ',':
                 return true;
            
         }
