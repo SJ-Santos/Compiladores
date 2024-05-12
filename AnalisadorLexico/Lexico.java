@@ -4,12 +4,12 @@ import java.util.LinkedList;
 
 public class Lexico {
 
-    // lista de fazeres  :
-        // 1- fazer a identificação de palavras reservada e ids 
-        // 2- testar o codigo 
-        // 3- considerar no que tornaria esse codigo mais legivel e profissional 
-
-    //obs : tomar cuidado com o . ele serve p separar numdouble ,  se não lançar exceção 
+    // Considerações : 
+    // 1- a maior parte do metodo retorno da tabela de tokens poderia ter utilizado´metodos auxiliares para deixar o codigo 
+    // com um entendimento mais facil , metade da classe é so ele , então fica facil de se perder 
+    // 2- ele so funciona com a linguagem que esta no main , possivelmente nao pegarira com outras 
+    // 3- ele poderia ser bem mais eficiente em algumas partes 
+  
 
     private String lexema;
     private char[] CodigoFonte;
@@ -28,23 +28,13 @@ public class Lexico {
 
     private  void preencherTabelaDeTokens(Lexema  l){
         this.TabelaDeTokens.addLast(l);
-        // for (int i =0 ; i<this.TabelaDeTokens.size() ; i++){
-        //     if (this.TabelaDeTokens.get(i) == null ) {
-        //         this.TabelaDeTokens.add(i,l);
-        //         break;
-        //     }
-        // }  
+        
     }
 
     
-    private  int preencherTabelaDeSimbolos (String l){
-        for(int i=0; i<this.TabelaDeSimbolos.size();i++){
-            if (this.TabelaDeSimbolos.get(i) == null) {
-                this.TabelaDeSimbolos.add(i, l);
-                return i ;
-            }
-        }
-        return -1;
+    private  void  preencherTabelaDeSimbolos (String l){
+        this.TabelaDeSimbolos.addLast(l);
+        
     }
 
     public   int consultaNatabelaDeSimbolos ( String l){ // se achar na tabela de simbolos ele retorna a posição , se não ele retorna a posição que o novo id foi colocado  
@@ -53,12 +43,13 @@ public class Lexico {
        for(int i=0; i<this.TabelaDeSimbolos.size();i++){
          if (l.equals(this.TabelaDeSimbolos.get(i)) == true) {
             jaTem = true ;
-            return i;
+            return i+1;
             
          }
        }
        if (jaTem == false ) {
-        return preencherTabelaDeSimbolos(l);
+         preencherTabelaDeSimbolos(l);
+         return this.TabelaDeSimbolos.size();
        }
 
         return -1;
@@ -187,7 +178,16 @@ public class Lexico {
         preencherTabelaDeTokens(input);
         this.lexema = "";
 
-       } else { // não é uma palavra reservada , então é ID 
+       } else if (this.CodigoFonte[this.ContadorGlobal] == 'f' && this.CodigoFonte[this.ContadorGlobal+1] == 'o' && this.CodigoFonte[this.ContadorGlobal+2] == 'r') { // se é int 
+        
+        this.lexema = this.lexema+ this.CodigoFonte[this.ContadorGlobal] + this.CodigoFonte[this.ContadorGlobal+1] + this.CodigoFonte[this.ContadorGlobal+2] ;
+        this.ContadorGlobal = this.ContadorGlobal+3;
+        input = new Lexema("Palavra Reservada : ", lexema);
+        preencherTabelaDeTokens(input);
+        this.lexema = "";
+
+       }
+        else { // não é uma palavra reservada , então é ID 
         
         for ( int i = this.ContadorGlobal ; i< this.CodigoFonte.length ; i++ ){
             if (Character.isDigit(this.CodigoFonte[i])) {
@@ -204,7 +204,7 @@ public class Lexico {
 
             }else {
 
-               input  = new Lexema("ID" + consultaNatabelaDeSimbolos(lexema) + " : ", lexema) ;
+               input  = new Lexema("ID" + consultaNatabelaDeSimbolos(lexema) + " : ", "") ;
                preencherTabelaDeTokens(input);
                this.ContadorGlobal = i;
                this.lexema = "";
@@ -234,6 +234,7 @@ public class Lexico {
                  preencherTabelaDeTokens(input);
                  this.lexema = "";
                  this.ContadorGlobal = u+1;
+                 break;
 
             }
 
@@ -293,7 +294,39 @@ public class Lexico {
          this.lexema = "";
          this.ContadorGlobal++;
         
-     }else if (this.isLogicOperator(this.CodigoFonte[this.ContadorGlobal]) ){ // testa se é operador logico 
+     }else if (this.CodigoFonte[this.ContadorGlobal] == '/' && (this.CodigoFonte[this.ContadorGlobal+1] == '/' ||this.CodigoFonte[this.ContadorGlobal+1] == '*')){ // testa se é comentario 
+
+        if (this.CodigoFonte[this.ContadorGlobal+1] == '/') {
+
+            this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal]; // adiciona o /
+            this.ContadorGlobal++;
+            this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal]; // adiciona o segundo /
+            this.ContadorGlobal++;
+
+            for(int i = this.ContadorGlobal;i< this.CodigoFonte.length;i++){ // pega tudo depois dos //  e antes de um \n  e joga fora 
+
+                if (this.CodigoFonte[i] == '\n') {
+                    this.lexema = this.lexema + this.CodigoFonte[i];
+                    this.ContadorGlobal = i+1 ;
+                    this.lexema = "";
+                    break;
+                }else {
+                    this.lexema = this.lexema + this.CodigoFonte[i];
+
+                }
+
+            } 
+
+        }else if (this.CodigoFonte[this.ContadorGlobal+1] == '*') {
+
+            
+           
+            throw new Exception();
+           
+        }
+
+     }
+     else if (this.isLogicOperator(this.CodigoFonte[this.ContadorGlobal]) ){ // testa se é operador logico 
 
         //operadores  logicos +,-,*,/,=,==,<,>,<=,>=
          if (this.CodigoFonte[this.ContadorGlobal] == '+') {
@@ -400,44 +433,14 @@ public class Lexico {
             
         }
 
-     } else if (this.CodigoFonte[this.ContadorGlobal] == '/'){ // testa se é comentario 
-
-        if (this.CodigoFonte[this.ContadorGlobal+1] == '/') {
-
-            this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal]; // adiciona o /
-            this.ContadorGlobal++;
-            this.lexema = this.lexema + this.CodigoFonte[this.ContadorGlobal]; // adiciona o segundo /
-            this.ContadorGlobal++;
-
-            for(int i = this.ContadorGlobal;i< this.CodigoFonte.length;i++){ // pega tudo depois dos //  e antes de um \n  e joga fora 
-
-                if (this.CodigoFonte[i] == '\n') {
-                    this.lexema = this.lexema + this.CodigoFonte[i];
-                    this.ContadorGlobal = i+1 ;
-                    this.lexema = "";
-                }else {
-                    this.lexema = this.lexema + this.CodigoFonte[i];
-
-                }
-
-            } 
-
-        }else if (this.CodigoFonte[this.ContadorGlobal+1] == '*') {
-           try { // trecho morto , java não deixa lançar exceção sem try e catch 
-
-           }catch(Exception e) {
-            throw new Exception();
-           }
-        }
-
-     }else if (this.CodigoFonte[this.ContadorGlobal] == '\n') {
+     } else if (this.CodigoFonte[this.ContadorGlobal] == '\n') {
         this.ContadorGlobal++;
+     }else {
+        throw new Exception();
      }
-        try {
+        
             
-        } catch (Exception e) {
-            throw new Exception();
-        }
+        
         
     }
          
@@ -475,6 +478,11 @@ public class Lexico {
            
         }
      return false;
+    }
+
+
+    public LinkedList<String> returnTabelaDeSimbolos (){
+        return this.TabelaDeSimbolos;
     }
 
     
